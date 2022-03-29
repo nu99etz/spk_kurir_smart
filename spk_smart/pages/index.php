@@ -4,163 +4,18 @@ defined('__VALID_ENTRANCE') or die('Dilarang Akses Halaman Ini :v');
 
 Page::useLayout("app");
 
-$sql = "select*from kriteria where 1 = 1";
-$query_kriteria = mysqli_query($conn->connect(), $sql);
+$sql = "select count(id) as total from karyawan where id in (select id_karyawan from data_alternatif)";
+$query = mysqli_query($conn->connect(), $sql);
+$total = mysqli_fetch_assoc($query);
 
-$sqlKriteria = "select id from kriteria";
-$queryKriteria = mysqli_query($conn->connect(), $sqlKriteria);
-
-$kriteriaRow = [];
-while ($kriteria = mysqli_fetch_array($queryKriteria)) {
-    $kriteriaRow[] = $kriteria['id'];
+function total($conn)
+{
+    $sql = "select count(id) as total from temp_list";
+    $query = mysqli_query($conn->connect(), $sql);
+    $total = mysqli_fetch_assoc($query);
+    return $total['total'];
 }
-
-$sqlNilaiBobot = "select*from nilai_bobot";
-$queryNilaiBobot = mysqli_query($conn->connect(), $sqlNilaiBobot);
-
-$nilaiBobotRow = [];
-while ($nilaiBobot = mysqli_fetch_array($queryNilaiBobot)) {
-    $nilaiBobotRow[$nilaiBobot['id_kriteria']] = $nilaiBobot['nilai_bobot_kriteria'];
-}
-
-// Maintence::debug($nilaiBobotRow);
-
-$sumNilaiBobot = array_sum($nilaiBobotRow);
-
-if ($sumNilaiBobot != 100) {
-    $status = 422;
-    $msg = "Nilai Bobot Harus 100%";
-} else {
-
-    // cek jumlah karyawan jika jumlah karyawan kurang dari 3 maka tidak bisa dilakukan perankingan
-    $sqlKurir = "select count(*) as jumlah_karyawan from karyawan where id in (select id_karyawan from data_alternatif)";
-    $queryKurir = mysqli_query($conn->connect(), $sqlKurir);
-    $jumlahKurir = mysqli_fetch_array($queryKurir);
-
-    if ($jumlahKurir['jumlah_karyawan'] < 3) {
-        $status = 422;
-        $msg = "jumlah data alternatif harus lebih dari 2";
-    } else {
-        // MENGHITUNG Normalisasi BOBOT
-        $normalisasiBobot = [];
-        foreach ($nilaiBobotRow as $key => $value) {
-            $normalisasiBobot[$key] = $value / $sumNilaiBobot;
-        }
-
-        // Maintence::debug($normalisasiBobot);
-
-        function getNilai($data, $idKriteria)
-        {
-            if (isset($data[$idKriteria])) {
-                return $data[$idKriteria];
-            } else {
-                return 0;
-            }
-        }
-
-        $sql = "select a.*, b.nama_kriteria, c.nama_karyawan from data_alternatif a left join kriteria b on a.id_kriteria = b.id join karyawan c on a.id_karyawan = c.id";
-
-        $query = mysqli_query($conn->connect(), $sql);
-
-        $map = [];
-        $record = [];
-        $no = 1;
-
-        while ($alternatif = mysqli_fetch_array($query)) {
-            $row = [];
-            $map[$alternatif['id_karyawan']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['nilai_alternatif'];
-        }
-
-        foreach ($map as $key => $value) {
-            $row = [];
-            $row['id_karyawan'] = $key;
-            foreach ($value as $key2 => $value2) {
-                $row['nama'] = $key2;
-            }
-            foreach ($kriteriaRow as $value) {
-                $row['nilai'][$value] = getNilai($value2, $value);
-            }
-            $record[] = $row;
-        }
-
-        // MAPPING UNTUK NILAI MIN MAX
-        $row = [];
-        foreach ($kriteriaRow as $kriteriaValue) {
-            foreach ($record as $key => $valueRecord) {
-                $row[$kriteriaValue][$valueRecord['id_karyawan']] = $valueRecord['nilai'][$kriteriaValue];
-            }
-        }
-        $mapMinMax = $row;
-
-        // MENCARI NILAI MIN DAN MAX
-        $minMax = [];
-        foreach ($mapMinMax as $key => $value) {
-            $minMax[$key]['max'] = max($mapMinMax[$key]);
-            $minMax[$key]['min'] = min($mapMinMax[$key]);
-        }
-
-        // Maintence::debug($minMax);
-
-        // MENGHITUNG NILAI UTILITY
-        $recordUtility = [];
-        foreach ($record as $key => $value) {
-            $row = [];
-            $row['id_karyawan'] = $value['id_karyawan'];
-            $row['nama'] = $value['nama'];
-            $row['nilai'] = $value['nilai'];
-            $row['nilai_utility'] = [];
-            foreach ($kriteriaRow as $kriteriaValue) {
-                $row['nilai_utility'][$kriteriaValue] = ($value['nilai'][$kriteriaValue] - $minMax[$kriteriaValue]['min']) / ($minMax[$kriteriaValue]['max'] - $minMax[$kriteriaValue]['min']);
-            }
-            $recordUtility[] = $row;
-        }
-
-        // MENGHITUNG NILAI AKHIR
-        $recordNA = [];
-        foreach ($recordUtility as $key => $value) {
-            $row = [];
-            $row['id_karyawan'] = $value['id_karyawan'];
-            $row['nama'] = $value['nama'];
-            $row['nilai'] = $value['nilai'];
-            $row['nilai_utility'] = $value['nilai_utility'];
-            $na = 0;
-            foreach ($kriteriaRow as $kriteriaValue) {
-                $na += ($normalisasiBobot[$kriteriaValue] * $value['nilai_utility'][$kriteriaValue]);
-            }
-            $row['nilai_akhir'] = $na;
-            $recordNA[] = $row;
-        }
-
-        // PROSES SORT RANK
-        array_multisort(array_column($recordNA, 'nilai_akhir'), SORT_DESC, $recordNA);
-
-        $nilaiutility = "";
-        $no = 1;
-        foreach ($recordNA as $key => $value) {
-            $nilaiutility .= "<tr>";
-            $nilaiutility .= "<td>" . $no . "</td>";
-            foreach ($kriteriaRow as $valueKriteria) {
-                $nilaiutility .= "<td>" . $value['nilai_utility'][$valueKriteria] . "</td>";
-            }
-            $nilaiutility .= "</tr>";
-            $no++;
-        }
-
-        $rank = "";
-        $no = 1;
-        foreach ($recordNA as $key => $value) {
-            $rank .= "<tr>";
-            $rank .= "<td>" . $no . "</td>";
-            $rank .= "<td>" . $value['id_karyawan'] . "</td>";
-            $rank .= "<td>" . $value['nama'] . "</td>";
-            $rank .= "<td>" . $value['nilai_akhir'] . "</td>";
-            $rank .= "</tr>";
-            $no++;
-        }
-        $status = 200;
-        $msg = "Perankingan Sukses Dilakukan";
-    }
-}
+// Maintence::debug($_SESSION);
 
 ?>
 
@@ -169,12 +24,12 @@ if ($sumNilaiBobot != 100) {
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"> Ranking Weighted Product</h1>
+                <h1 class="m-0"> Perankingan SMART</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="<?php echo $config['base_url'] . $config['path']; ?>">Home</a></li>
-                    <li class="breadcrumb-item active">Ranking WP</li>
+                    <li class="breadcrumb-item active">Perankingan SMART</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -188,56 +43,40 @@ if ($sumNilaiBobot != 100) {
         <div class="row">
             <!-- /.col-md-6 -->
             <div class="col-lg-12">
-                <?php if ($status == 422) {
-                    $alert = 'danger';
-                    $icon = 'fa-ban';
-                    $notif = 'Gagal';
-                } else if ($status == 200) {
-                    $alert = 'success';
-                    $icon = 'fa-check';
-                    $notif = 'Sukses';
-                } ?>
-                <div class="alert alert-<?php echo $alert;?> alert-dismissible">
+                <div class="alert alert-info alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5><i class="icon fa <?php echo $icon;?>"></i> <?php echo $notif;?></h5>
-                    <?php echo $msg;?>
+                    <h5><i class="icon fa fa-info"></i> <b>Perhatian!</b></h5>
+                    Silahkan untuk memilih minimal 3 kurir untuk melakukan perankingan.
                 </div>
-            </div>
-            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title m-0">Nilai Utility SMART</h5>
+                        <h5 class="card-title m-0">Perankingan SMART</h5>
                     </div>
                     <div class="card-body">
-                        <table id="Nilaiutility" class="table table-bordered table-hover" width="100%" cellspacing="0">
-                            <thead>
-                                <th>No</th>
-                                <?php while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
-                                ?>
-                                    <th><?php echo $kriteria['nama_kriteria']; ?></th>
-                                <?php   } ?>
-                            </thead>
-                            <tbody><?php echo $nilaiutility; ?></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                        <?php if (total($conn) > 2) {
+                        ?>
+                            <button type="button" class="btn btn-sm btn-flat btn-primary float-right btn-rank"><i class="fa fa-trophy"></i> Ranking</button>
+                            <br />
+                            <br />
+                        <?php   }  ?>
 
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title m-0">Ranking SMART</h5>
-                    </div>
-                    <div class="card-body">
-                        <table id="ranking" class="table table-bordered table-hover" width="100%" cellspacing="0">
+                        <!-- <form method="post" action="#" enctype="multipart/form-data"> -->
+                        <table id="alternatif" class="table table-bordered table-hover" width="100%" cellspacing="0">
                             <thead>
+                                <?php if ($total['total'] != total($conn)) {
+                                ?>
+                                    <th><input type="checkbox" id="pilih" act="<?php echo $config['base_url'] . $config['path']; ?>/spk_smart/proses_pemilihan/add/"></th>
+                                <?php } else {
+                                ?>
+                                    <th><input type="checkbox" id="pilih" act="<?php echo $config['base_url'] . $config['path']; ?>/spk_smart/proses_pemilihan/delete/" checked></th>
+                                <?php   } ?>
                                 <th>No</th>
                                 <th>Id Kurir</th>
                                 <th>Nama Kurir</th>
-                                <th>Hasil</th>
                             </thead>
-                            <tbody><?php echo $rank; ?></tbody>
+                            <tbody></tbody>
                         </table>
+                        <!-- </form> -->
                     </div>
                 </div>
             </div>
@@ -247,16 +86,70 @@ if ($sumNilaiBobot != 100) {
 </div>
 <!-- /.content -->
 
-<?php
-$modal_title = "Form Ranking";
-$modal_id = "modal_ranking";
-$modal_size = "sm";
-include(Route::getViewPath("include/modal"));
-?>
-
 <script>
-    let _table = $("#ranking");
-    let _table_utility = $('#Nilaiutility');
+    let _table = $("#alternatif");
+    let _url = "<?php echo $config['base_url'] . $config['path']; ?>/spk_smart/list_alternatif";
+
+    DataTables(_url, _table);
+
+    $(document).on('click', '.btn-rank', function() {
+        let _url = "<?php echo $config['base_url'] . $config['path']; ?>/spk_smart/hasil_ranking";
+        window.location.href = _url;
+    });
+
+    $(document).on('click', '.ubah', function() {
+        let _id = $(this).attr('id');
+        let _url = "<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif/form_alternatif/edit/" + _id;
+        window.location.href = _url;
+    });
+
+    $(document).on('click', '#pilih', function() {
+        let _url = $(this).attr('act');
+        send((data, xhr = null) => {
+            if (data.status == 200) {
+                window.location.href = "<?php echo $config['base_url'] . $config['path']; ?>/spk_smart/";
+            }
+        }, _url, "json", "get");
+    })
+
+    $(document).on('submit', 'form#import', function() {
+        event.preventDefault();
+        let _data = new FormData($(this)[0]);
+        let _url = $(this).attr('action');
+
+        send((data, xhr = null) => {
+            if (data.status == 422) {
+                FailedNotif(data.messages);
+            } else if (data.status == 200) {
+                SuccessNotif(data.messages);
+                _modal.modal('hide');
+                _table.DataTable().ajax.reload();
+            }
+        }, _url, "json", "post", _data);
+    });
+
+    $(document).on('click', '.hapus', function() {
+        let _id = $(this).attr('id');
+        let _url = "<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif/hapus_alternatif/" + _id;
+        Swal.fire({
+            title: 'Apakah Anda Yakin Menghapus Data Ini ?',
+            showCancelButton: true,
+            confirmButtonText: `Hapus`,
+            confirmButtonColor: '#d33',
+            icon: 'question'
+        }).then((result) => {
+            if (result.value) {
+                send((data, xhr = null) => {
+                    if (data.status == 200) {
+                        Swal.fire("Sukses", data.messages, 'success');
+                        _table.DataTable().ajax.reload();
+                    } else if (data.status == 422) {
+                        Swal.fire("Gagal", data.messages, 'error');
+                    }
+                }, _url, "json", "get");
+            }
+        })
+    });
 </script>
 
 <?php Page::buildLayout(); ?>

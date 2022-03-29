@@ -22,10 +22,10 @@
                     <li class="nav-item dropdown">
                         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Master Data</a>
                         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                            <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/kurir" class="dropdown-item">Data Kurir </a></li>
+                            <!-- <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/kurir" class="dropdown-item">Data Kurir </a></li> -->
                             <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/kriteria" class="dropdown-item">Data Kriteria</a></li>
                             <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/nilai_bobot" class="dropdown-item">Nilai Bobot</a></li>
-                            <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif" class="dropdown-item">Data Alternatif</a></li>
+                            <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif" class="dropdown-item">Data Kurir</a></li>
                         </ul>
                     </li>
                 <?php    } ?>

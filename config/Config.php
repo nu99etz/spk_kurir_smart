@@ -5,7 +5,7 @@ $config = array();
 // Config URL
 $config['base_url'] = "http://localhost";
 $config['root'] = '/home/nu99etz/public_html';
-$config['path'] = '/spk_kurir_smart';
+$config['path'] = '/spk_kurir_smart_v2';
 $config['assets'] = $config['path'] . '/assets/';
 $config['helpers'] = '../helpers/';
 $config['models'] = '../models/';

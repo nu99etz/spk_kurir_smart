@@ -2,39 +2,41 @@
 
 if (Route::is_ajax()) {
 
-    $sql = "select*from kriteria_produk a join produk b on a.id_produk = b.id join kriteria c on a.id_kriteria = c.id";
+    function ifExist($conn, $id)
+    {
+        $sql = "select count(id) as total from temp_list where id_karyawan = $id";
+        $query = mysqli_query($conn->connect(), $sql);
+        $total = mysqli_fetch_assoc($query);
+
+        if ($total['total'] > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    $sql = "select id, nama_karyawan from karyawan where id in (select id_karyawan from data_alternatif)";
 
     $query = mysqli_query($conn->connect(), $sql);
 
-    $map = [];
     $record = [];
     $no = 1;
 
-    while ($alternatif = mysqli_fetch_array($query)) {
+    while ($kurir = mysqli_fetch_assoc($query)) {
         $row = [];
-        $row[$alternatif['nama_kriteria']] = $alternatif['nilai_kriteria'];
-        $map[$alternatif['id_produk']][$alternatif['nama_produk']][] = $row;
-    }
-
-    foreach ($map as $key => $value) {
-        $row = [];
+        if (ifExist($conn, $kurir['id'])) {
+            $url = $config['base_url'] . $config['path'] . "/spk_smart/proses_pemilihan/delete/" . $kurir['id'];
+            $row[] = '<input type = "checkbox" id = "pilih" act = "' . $url . '" checked>';
+        } else {
+            $url = $config['base_url'] . $config['path'] . "/spk_smart/proses_pemilihan/add/" . $kurir['id'];
+            $row[] = '<input type = "checkbox" id = "pilih" act = "' . $url . '">';
+        }
         $row[] = $no;
-        foreach($value as $key2 => $value2) {
-            $row[] = $key2;
-        }
-        foreach ($value2 as $key3 => $value3) {
-            foreach ($value3 as $value4) {
-                $row[] = $value4;
-            }
-        }
-        $button = '<button type="button" name="hapus" id="' . $key . '" class="hapus btn-flat btn-danger btn-sm"><i class = "fa fa-trash"></i></button> ';
-        $button .= '<button type="button" name="ubah" id="' . $key . '" class="ubah btn-flat btn-warning btn-sm"><i class = "fa fa-edit"></i></button> ';
-        $row[] = $button;
+        $row[] = $kurir['id'];
+        $row[] = $kurir['nama_karyawan'];
         $no++;
         $record[] = $row;
     }
-
-    // Maintence::debug($record);
 
     echo json_encode([
         'data' => $record,
