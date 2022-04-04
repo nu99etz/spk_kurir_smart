@@ -8,7 +8,7 @@ Page::useLayout("app");
 // $querykaryawan = mysqli_query($conn->connect(), $sqlkaryawan);
 // $totalkaryawan = mysqli_fetch_assoc($querykaryawan);
 
-$sqlkaryawanAlternatif = "select count(*) as total_karyawan from karyawan where id in (select id_karyawan from data_alternatif)";
+$sqlkaryawanAlternatif = "select count(*) as total_karyawan from karyawan where id in (select id_kurir from data_alternatif)";
 $querykaryawanAlternatif = mysqli_query($conn->connect(), $sqlkaryawanAlternatif);
 $totalkaryawanAternatif = mysqli_fetch_assoc($querykaryawanAlternatif);
 
@@ -58,7 +58,7 @@ $totalkaryawanAternatif = mysqli_fetch_assoc($querykaryawanAlternatif);
                     <div class="inner">
                         <h3><?php echo $totalkaryawanAternatif['total_karyawan'];?></h3>
 
-                        <p>Data Kurir</p>
+                        <p>Data Penilaian Kurir</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-users"></i>

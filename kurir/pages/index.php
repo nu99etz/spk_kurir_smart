@@ -46,7 +46,10 @@ Page::useLayout("app");
                         <table id="kurir" class="table table-bordered table-hover" width="100%" cellspacing="0">
                             <thead>
                                 <th>No</th>
+                                <th>NIK</th>
                                 <th>Nama kurir</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Alamat</th>
                                 <th>Aksi</th>
                             </thead>
                             <tbody></tbody>

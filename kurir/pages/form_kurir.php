@@ -9,14 +9,20 @@ if (Route::is_ajax()) {
         $query = mysqli_query($conn->connect(), $sql);
         $karyawan = mysqli_fetch_assoc($query);
 
+        $nik = $karyawan['nik'];
         $nama_karyawan = $karyawan['nama_karyawan'];
+        $tanggal_lahir = $karyawan['tanggal_lahir'];
+        $alamat = $karyawan['alamat'];
     } else {
+        $nik = "";
         $nama_karyawan = "";
+        $tanggal_lahir = "";
+        $alamat = "";
     }
 
 ?>
 
-    <form id="karyawan" method="post" action="<?php echo $config['base_url'] . $config['path']; ?>/karyawan/proses_input" enctype="multipart/form-data">
+    <form id="kurir" method="post" action="<?php echo $config['base_url'] . $config['path']; ?>/kurir/proses_input" enctype="multipart/form-data">
 
         <?php if ($p_act == "edit" && !empty($id)) {
         ?>
@@ -24,9 +30,36 @@ if (Route::is_ajax()) {
             <input type="hidden" name="id" value="<?php echo $id; ?>">
         <?php } ?>
 
-        <div class="form-group">
-            <label for="nama_karyawan">Nama Karyawan</label>
-            <input type="text" class="form-control rounded-0" name="nama_karyawan" id="nama_karyawan" placeholder="Nama Karyawan" value="<?php echo $nama_karyawan; ?>">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nik">NIP</label>
+                    <input type="text" class="form-control rounded-0" name="nik" id="nik" placeholder="NIP" maxlength="9" value="<?php echo $nik; ?>">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="nama_karyawan">Nama Kurir</label>
+                    <input type="text" class="form-control rounded-0" name="nama_karyawan" id="nama_karyawan" placeholder="Nama Kurir" value="<?php echo $nama_karyawan; ?>">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <input type="date" class="form-control rounded-0" name="tanggal_lahir" id="tanggal_lahir" placeholder="Tanggal Lahir" value="<?php echo $tanggal_lahir; ?>">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="alamat">Alamat</label>
+                    <textarea class="form-control rounded-0" name="alamat" id="alamat" placeholder="Alamat"><?php echo $alamat; ?></textarea>
+                </div>
+            </div>
         </div>
 
         <div class="form-group">

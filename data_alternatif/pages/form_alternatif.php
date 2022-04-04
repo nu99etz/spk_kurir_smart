@@ -4,25 +4,43 @@ defined('__VALID_ENTRANCE') or die('Dilarang Akses Halaman Ini :v');
 
 Page::useLayout("app");
 
+function getPenilaian($conn, $id_kriteria, $id = null)
+{
+    $sql = "select*from nilai_kriteria where id_kriteria = $id_kriteria order by nilai_bobot desc";
+    $query = mysqli_query($conn->connect(), $sql);
+    $select = "";
+    while ($nilai = mysqli_fetch_assoc($query)) {
+        if ($id == "") {
+            $select .= '<option value = ' . $nilai['id'] . '>' . $nilai['nilai_parameter'] . ' (' . $nilai['nilai_bobot'] . ')</option>';
+        } else {
+            if ($id == $nilai['id']) {
+                $select .= '<option value = ' . $nilai['id'] . ' selected>' . $nilai['nilai_parameter'] . ' (' . $nilai['nilai_bobot'] . ')</option>';
+            } else {
+                $select .= '<option value = ' . $nilai['id'] . '>' . $nilai['nilai_parameter'] . ' (' . $nilai['nilai_bobot'] . ')</option>';
+            }
+        }
+    }
+    return $select;
+}
+
 if ($p_act == "edit" && !empty($id)) {
 
-    $sql_data_alternatif = "select*from data_alternatif where id_karyawan = $id";
+    $sql_data_alternatif = "select*from data_alternatif where id_kurir = $id";
     $query_data_alternatif = mysqli_query($conn->connect(), $sql_data_alternatif);
 
     $recordKriteriakaryawan = [];
     while ($kriteriakaryawan = mysqli_fetch_assoc($query_data_alternatif)) {
         $row = [];
-        $row['nilai_alternatif'] = $kriteriakaryawan['nilai_alternatif'];
-        $row['deskripsi'] = $kriteriakaryawan['deskripsi'];
+        $row['id_penilaian'] = $kriteriakaryawan['id_penilaian'];
         $recordKriteriakaryawan[] = $row;
     }
 
-    $sql_karyawan = "select id, nama_karyawan from karyawan where id in (select id_karyawan from data_alternatif where id_karyawan = $id)";
+    $sql_karyawan = "select id, nama_karyawan from karyawan where id in (select id_kurir from data_alternatif where id_kurir = $id)";
 
     $act = "Ubah";
 } else {
 
-    $sql_karyawan = "select id, nama_karyawan from karyawan where id not in (select id_karyawan from data_alternatif)";
+    $sql_karyawan = "select id, nama_karyawan from karyawan where id not in (select id_kurir from data_alternatif)";
     $recordKriteriakaryawan = '';
 
     $act = "Tambah";
@@ -49,12 +67,12 @@ while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"><?php echo $act; ?> Data Alternatif</h1>
+                <h1 class="m-0"><?php echo $act; ?> Form Penilaian Kurir</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="<?php echo $config['base_url'] . $config['path']; ?>">Home</a></li>
-                    <li class="breadcrumb-item active"><?php echo $act; ?> Data Alternatif</li>
+                    <li class="breadcrumb-item active"><?php echo $act; ?> Form Penilaian Kurir</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -68,18 +86,9 @@ while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
         <div class="row">
             <!-- /.col-md-6 -->
             <div class="col-lg-12">
-                <div class="alert alert-info alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5><i class="icon fa fa-info"></i> <b>Perhatian!</b></h5>
-                   Untuk pengisian deskripsi sesuaikan seperti contoh dibawah ini : <br/>
-                   Contoh : <b>deskripsi (nilai)</b> </br>
-                   Untuk nilai <b>1-3</b><br/>
-                </div>
-            </div>
-            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title m-0"><?php echo $act; ?> Data Alternatif</h5>
+                        <h5 class="card-title m-0"><?php echo $act; ?> Form Penilaian Kurir</h5>
                     </div>
                     <div class="card-body">
 
@@ -115,24 +124,32 @@ while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
 
                             <?php if (empty($recordKriteriakaryawan)) {
                                 for ($i = 0; $i < count($record); $i++) {
+                                    $nilai_kriteria = getPenilaian($conn, $record[$i]['id']);
                             ?>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Deskripsi <?php echo $record[$i]['nama_kriteria']; ?></label>
-                                                <textarea class="form-control rounded-0" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" placeholder="Deskripsi <?php echo $record[$i]['nama_kriteria']; ?>"></textarea>
+                                                <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
+                                                <select class="custom-select rounded-0" style="width: 100%;" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
+                                                    <option value="" disabled selected hidden>-- PILIH PENILAIAN --</option>
+                                                    <?php echo $nilai_kriteria; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 <?php   }
                             } else if (!empty($recordKriteriakaryawan)) {
                                 for ($i = 0; $i < count($record); $i++) {
+                                    $nilai_kriteria = getPenilaian($conn, $record[$i]['id'], $recordKriteriakaryawan[$i]['id_penilaian']);
                                 ?>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Deskripsi <?php echo $record[$i]['nama_kriteria']; ?></label>
-                                                <textarea class="form-control rounded-0" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" placeholder="Deskripsi <?php echo $record[$i]['nama_kriteria']; ?>"><?php echo $recordKriteriakaryawan[$i]['deskripsi']; ?></textarea>
+                                                <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
+                                                <select class="custom-select rounded-0" style="width: 100%;" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
+                                                    <option value="" disabled selected hidden>-- PILIH PENILAIAN --</option>
+                                                    <?php echo $nilai_kriteria; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

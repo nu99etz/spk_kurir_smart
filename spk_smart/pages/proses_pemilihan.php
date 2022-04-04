@@ -19,7 +19,7 @@ if (Route::is_ajax()) {
         if (!empty($id)) {
             addCheckList($conn, $id);
         } else {
-            $sql = "select id from karyawan where id in (select id_karyawan from data_alternatif)";
+            $sql = "select id from karyawan where id in (select id_kurir from data_alternatif)";
             $query = mysqli_query($conn->connect(), $sql);
 
             $sqlDelete = "delete from temp_list";

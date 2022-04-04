@@ -4,8 +4,13 @@ defined('__VALID_ENTRANCE') or die('Dilarang Akses Halaman Ini :v');
 
 Page::useLayout("app");
 
-$sql = "select*from kriteria where 1 = 1";
+$sql = "select nama_kriteria from kriteria where 1 = 1";
 $query_kriteria = mysqli_query($conn->connect(), $sql);
+
+$kriteriaCol = [];
+while ($kriteriaC = mysqli_fetch_assoc($query_kriteria)) {
+    $kriteriaCol[] = $kriteriaC['nama_kriteria'];
+}
 
 $sqlKriteria = "select id from kriteria";
 $queryKriteria = mysqli_query($conn->connect(), $sqlKriteria);
@@ -58,7 +63,7 @@ if ($sumNilaiBobot != 100) {
             }
         }
 
-        $sql = "select a.*, b.nama_kriteria, c.nama_karyawan from data_alternatif a left join kriteria b on a.id_kriteria = b.id join karyawan c on a.id_karyawan = c.id where a.id_karyawan in (select id_karyawan from temp_list)";
+        $sql = "select a.*, b.nama_karyawan, c.nama_kriteria, d.id_kriteria, d.nilai_parameter, d.nilai_bobot from data_alternatif a left join karyawan b on a.id_kurir = b.id left join nilai_kriteria d on a.id_penilaian = d.id left join kriteria c on d.id_kriteria = c.id where a.id_kurir in (select id_karyawan from temp_list)";
 
         $query = mysqli_query($conn->connect(), $sql);
 
@@ -68,7 +73,7 @@ if ($sumNilaiBobot != 100) {
 
         while ($alternatif = mysqli_fetch_array($query)) {
             $row = [];
-            $map[$alternatif['id_karyawan']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['nilai_alternatif'];
+            $map[$alternatif['id_kurir']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['nilai_bobot'];
         }
 
         foreach ($map as $key => $value) {
@@ -81,6 +86,21 @@ if ($sumNilaiBobot != 100) {
                 $row['nilai'][$value] = getNilai($value2, $value);
             }
             $record[] = $row;
+        }
+
+        // view penilaian bobot kriteria masing-masing kurir
+        $nilaiBobotV = "";
+        $no = 1;
+        foreach ($record as $key => $value) {
+            $nilaiBobotV .= "<tr>";
+            $nilaiBobotV .= "<td>" . $no . "</td>";
+            $nilaiBobotV .= "<td>" . $value['id_karyawan'] . "</td>";
+            $nilaiBobotV .= "<td>" . $value['nama'] . "</td>";
+            foreach ($kriteriaRow as $valueKriteria) {
+                $nilaiBobotV .= "<td>" . $value['nilai'][$valueKriteria] . "</td>";
+            }
+            $nilaiBobotV .= "</tr>";
+            $no++;
         }
 
         // MAPPING UNTUK NILAI MIN MAX
@@ -99,7 +119,24 @@ if ($sumNilaiBobot != 100) {
             $minMax[$key]['min'] = min($mapMinMax[$key]);
         }
 
-        // Maintence::debug($minMax);
+        $viewMinMax = [];
+        foreach($minMax as $key => $value) {
+            $viewMinMax['min'][$key] = $minMax[$key]['min'];
+            $viewMinMax['max'][$key] = $minMax[$key]['max'];
+        }
+
+        $htmlMinMax = "";
+        $no = 1;
+        foreach($viewMinMax as $key => $value) {
+            $htmlMinMax .= "<tr>";
+            $htmlMinMax .= "<td>" . $no . "</td>";
+            $htmlMinMax .= "<td>" . strtoupper($key) . "</td>";
+            foreach($kriteriaRow as $valuekriteria) {
+                $htmlMinMax .= "<td>" . $value[$valuekriteria] . "</td>";
+            }
+            $htmlMinMax .= "</tr>";
+            $no ++;
+        }
 
         // MENGHITUNG NILAI UTILITY
         $recordUtility = [];
@@ -113,7 +150,7 @@ if ($sumNilaiBobot != 100) {
                 $k1 = ($value['nilai'][$kriteriaValue] - $minMax[$kriteriaValue]['min']);
                 $k2 = ($minMax[$kriteriaValue]['max'] - $minMax[$kriteriaValue]['min']);
 
-                if($k2 > 0) {
+                if ($k2 > 0) {
                     $row['nilai_utility'][$kriteriaValue] = $k1 / $k2;
                 } else {
                     $row['nilai_utility'][$kriteriaValue] = 0;
@@ -146,6 +183,8 @@ if ($sumNilaiBobot != 100) {
         foreach ($recordNA as $key => $value) {
             $nilaiutility .= "<tr>";
             $nilaiutility .= "<td>" . $no . "</td>";
+            $nilaiutility .= "<td>" . $value['id_karyawan'] . "</td>";
+            $nilaiutility .= "<td>" . $value['nama'] . "</td>";
             foreach ($kriteriaRow as $valueKriteria) {
                 $nilaiutility .= "<td>" . $value['nilai_utility'][$valueKriteria] . "</td>";
             }
@@ -176,12 +215,12 @@ if ($sumNilaiBobot != 100) {
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"> Ranking Weighted Product</h1>
+                <h1 class="m-0"> Ranking SMART</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="<?php echo $config['base_url'] . $config['path']; ?>">Home</a></li>
-                    <li class="breadcrumb-item active">Ranking WP</li>
+                    <li class="breadcrumb-item active">Ranking SMART</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -204,12 +243,56 @@ if ($sumNilaiBobot != 100) {
                     $icon = 'fa-check';
                     $notif = 'Sukses';
                 } ?>
-                <div class="alert alert-<?php echo $alert;?> alert-dismissible">
+                <div class="alert alert-<?php echo $alert; ?> alert-dismissible">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <h5><i class="icon fa <?php echo $icon;?>"></i> <?php echo $notif;?></h5>
-                    <?php echo $msg;?>
+                    <h5><i class="icon fa <?php echo $icon; ?>"></i> <?php echo $notif; ?></h5>
+                    <?php echo $msg; ?>
                 </div>
             </div>
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title m-0">Nilai Bobot Penilaian Kurir</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="NilaiBobotKurir" class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <thead>
+                                <th>No</th>
+                                <th>ID Kurir</th>
+                                <th>Nama Kurir</th>
+                                <?php for ($i = 0; $i < count($kriteriaCol); $i++) {
+                                ?>
+                                    <th><?php echo $kriteriaCol[$i]; ?></th>
+                                <?php   } ?>
+                            </thead>
+                            <tbody><?php echo $nilaiBobotV; ?></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title m-0">Nilai Min Max</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="nilaiminmax" class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <thead>
+                                <th>No</th>
+                                <th>Parameter</th>
+                                <?php for ($i = 0; $i < count($kriteriaCol); $i++) {
+                                ?>
+                                    <th><?php echo $kriteriaCol[$i]; ?></th>
+                                <?php   } ?>
+                            </thead>
+                            <tbody><?php echo $htmlMinMax; ?></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -219,9 +302,11 @@ if ($sumNilaiBobot != 100) {
                         <table id="Nilaiutility" class="table table-bordered table-hover" width="100%" cellspacing="0">
                             <thead>
                                 <th>No</th>
-                                <?php while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
+                                <th>ID Kurir</th>
+                                <th>Nama Kurir</th>
+                                <?php for ($i = 0; $i < count($kriteriaCol); $i++) {
                                 ?>
-                                    <th><?php echo $kriteria['nama_kriteria']; ?></th>
+                                    <th><?php echo $kriteriaCol[$i]; ?></th>
                                 <?php   } ?>
                             </thead>
                             <tbody><?php echo $nilaiutility; ?></tbody>

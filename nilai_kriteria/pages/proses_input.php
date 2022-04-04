@@ -10,16 +10,6 @@ if (Route::is_ajax()) {
         }
     }
 
-    // check NIK jika tidak berupa angka muncul validasi
-    if (!is_numeric($_POST['nik'])) {
-        $msg['nik'] = "nik harus berupa angka";
-    }
-
-    // check panjang NIK jika lebih atau kurang 9 digit muncul validasi
-    if (strlen($_POST['nik']) != 9) {
-        $msg['nik'] = "nik harus berisi 9 digit";
-    }
-
     if ($msg) {
         $error_validation = implode("<br/>", $msg);
         $response = array(
@@ -30,54 +20,54 @@ if (Route::is_ajax()) {
     } else {
         if (empty($_POST["_method"])) {
 
-            $nik = $_POST['nik'];
-            $nama_karyawan = ucwords($_POST['nama_karyawan']);
-            $tanggal_lahir = $_POST['tanggal_lahir'];
-            $alamat = $_POST['alamat'];
-            $sql = "insert into karyawan (nik, nama_karyawan, tanggal_lahir, alamat) values ('$nik', '$nama_karyawan', '$tanggal_lahir', '$alamat')";
+            $id_kriteria = $_POST['nama_kriteria'];
+            $batas_nilai_parameter = ucwords($_POST['nilai_parameter']);
+            $nilai_bobot_kriteria = $_POST['nilai_bobot'];
+
+            $sql = "insert into nilai_kriteria (id_kriteria, nilai_parameter, nilai_bobot) values ('$id_kriteria', '$batas_nilai_parameter', '$nilai_bobot_kriteria')";
 
             $query = mysqli_query($conn->connect(), $sql);
 
             if (!$query) {
                 $response = [
                     'status' => 422,
-                    'messages' => 'Gagal Input data kurir'
+                    'messages' => 'Gagal Input Nilai Kriteria'
                 ];
             } else {
                 $response = [
                     'status' => 200,
-                    'messages' => 'Sukses Input data kurir'
+                    'messages' => 'Sukses Input Nilai Kriteria'
                 ];
             }
         } else {
 
             // proses update data
             if ($_POST['_method'] == "PUT") {
-                $nik = $_POST['nik'];
-                $nama_karyawan = ucwords($_POST['nama_karyawan']);
-                $tanggal_lahir = $_POST['tanggal_lahir'];
-                $alamat = $_POST['alamat'];
+
+                $id_kriteria = $_POST['nama_kriteria'];
+                $batas_nilai_parameter = ucwords($_POST['nilai_parameter']);
+                $nilai_bobot_kriteria = $_POST['nilai_bobot'];
                 $id = $_POST['id'];
 
-                $sql = "update karyawan set nik = '$nik', nama_karyawan = '$nama_karyawan', tanggal_Lahir = '$tanggal_lahir', alamat = '$alamat' where id = $id and 1=1";
+                $sql = "update nilai_kriteria set id_kriteria = '$id_kriteria', nilai_parameter = '$batas_nilai_parameter', nilai_bobot = '$nilai_bobot_kriteria' where id = $id and 1=1";
 
                 $query = mysqli_query($conn->connect(), $sql);
 
                 if (!$query) {
                     $response = [
                         'status' => 422,
-                        'messages' => 'Gagal Update data kurir'
+                        'messages' => 'Gagal Update Nilai Kriteria'
                     ];
                 } else {
                     $response = [
                         'status' => 200,
-                        'messages' => 'Sukses Update data kurir'
+                        'messages' => 'Sukses Update Nilai Kriteria'
                     ];
                 }
             } else {
                 $response = [
                     'status' => 422,
-                    'messages' => 'Gagal Update data kurir'
+                    'messages' => 'Gagal Update Nilai Kriteria'
                 ];
             }
         }

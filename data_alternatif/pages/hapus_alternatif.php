@@ -4,7 +4,7 @@ if (Route::is_ajax()) {
 
     $id = $p_act;
 
-    $sqlAlternatif = "delete from data_alternatif where id_karyawan = $id";
+    $sqlAlternatif = "delete from data_alternatif where id_kurir = $id";
 
     $queryAlternatif = mysqli_query($conn->connect(), $sqlAlternatif);
 

@@ -24,8 +24,9 @@
                         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                             <!-- <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/kurir" class="dropdown-item">Data Kurir </a></li> -->
                             <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/kriteria" class="dropdown-item">Data Kriteria</a></li>
+                            <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/nilai_kriteria" class="dropdown-item">Nilai Kriteria</a></li>
                             <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/nilai_bobot" class="dropdown-item">Nilai Bobot</a></li>
-                            <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif" class="dropdown-item">Data Kurir</a></li>
+                            <li><a href="<?php echo $config['base_url'] . $config['path']; ?>/kurir" class="dropdown-item">Data Kurir</a></li>
                         </ul>
                     </li>
                 <?php    } ?>
@@ -33,7 +34,7 @@
                 <?php if (Auth::getSession('role') == 1) {
                 ?>
                     <li class="nav-item">
-                        <a href="<?php echo $config['base_url'] . $config['path']; ?>/nilai_bobot_alternatif" class="nav-link">Nilai Bobot Alternatif</a>
+                        <a href="<?php echo $config['base_url'] . $config['path']; ?>/data_alternatif" class="nav-link">Penilaian Kurir</a>
                     </li>
                 <?php   } ?>
 

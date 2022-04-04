@@ -4,7 +4,7 @@ defined('__VALID_ENTRANCE') or die('Dilarang Akses Halaman Ini :v');
 
 Page::useLayout("app");
 
-$sql = "select count(id) as total from karyawan where id in (select id_karyawan from data_alternatif)";
+$sql = "select count(id) as total from karyawan where id in (select id_kurir from data_alternatif)";
 $query = mysqli_query($conn->connect(), $sql);
 $total = mysqli_fetch_assoc($query);
 

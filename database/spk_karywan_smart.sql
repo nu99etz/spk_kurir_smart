@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2022 at 07:20 AM
--- Server version: 10.7.3-MariaDB
--- PHP Version: 8.1.3
+-- Waktu pembuatan: 04 Apr 2022 pada 00.19
+-- Versi server: 10.7.3-MariaDB
+-- Versi PHP: 8.1.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,210 +24,218 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `data_alternatif`
+-- Struktur dari tabel `data_alternatif`
 --
 
 CREATE TABLE `data_alternatif` (
   `id` int(11) NOT NULL,
-  `id_karyawan` int(11) DEFAULT NULL,
-  `id_kriteria` int(11) DEFAULT NULL,
-  `deskripsi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `nilai_alternatif` int(11) DEFAULT NULL
+  `id_kurir` int(11) DEFAULT NULL,
+  `id_penilaian` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `data_alternatif`
+-- Dumping data untuk tabel `data_alternatif`
 --
 
-INSERT INTO `data_alternatif` (`id`, `id_karyawan`, `id_kriteria`, `deskripsi`, `nilai_alternatif`) VALUES
-(1, 9, 1, 'Sangat Paham Tentang Sistem (3)', 3),
-(2, 9, 2, 'Melakukan Pengiriman 1500 Paket (3)', 3),
-(3, 9, 3, 'Tidak Ada Paket Pending (cleansheet) (3)', 3),
-(4, 9, 4, 'Jumlah Paket POD 800 Paket (3)', 3),
-(5, 9, 5, 'Tidak Menerima Komplain (3)', 3),
-(6, 9, 6, 'Jam Kerja Sesuai SOP Perusahaan (2)', 2),
-(7, 9, 7, 'Paket Telah Di Deliv Dan Membayar Uang COD (3)', 3),
-(8, 10, 1, 'Cukup Paham Tentang Sistem (2)', 2),
-(9, 10, 2, 'Melakukan Pengiriman 1200 Paket (1)', 1),
-(10, 10, 3, 'Tingkat Paket Pending 25 Paket (2)', 2),
-(11, 10, 4, 'Jumlah Paket POD 500 Paket (2)', 2),
-(12, 10, 5, 'Menerima Komplain Sebanyak 2 Customer (3)', 3),
-(13, 10, 6, 'Jam Kerja Mencapai 8 Jam (2)', 2),
-(14, 10, 7, 'Mengurangi Uang COD (2)', 2),
-(15, 17, 1, 'Kurang Paham Tentang Sistem (2)', 2),
-(16, 17, 2, 'Melakukan Pengiriman Paket 500 Paket (1)', 1),
-(17, 17, 3, 'Tingkat Pending Paket 50 Paket (1)', 1),
-(18, 17, 4, 'Jumlah Paket POD 100 Paket (1)', 1),
-(19, 17, 5, 'Menerima Komplain Sebanyak 5 Customer (2)', 2),
-(20, 17, 6, 'Jam Kerja Hanya Mencapai 5 Jam (1)', 1),
-(21, 17, 7, 'Paket Yang Dideliv Tidak Tepat Waktu Dan Mengurangi Uang COD (2)', 2);
+INSERT INTO `data_alternatif` (`id`, `id_kurir`, `id_penilaian`) VALUES
+(22, 9, 3),
+(23, 9, 14),
+(24, 9, 28),
+(25, 9, 36),
+(26, 9, 43),
+(27, 9, 49),
+(28, 9, 52),
+(29, 10, 2),
+(30, 10, 11),
+(31, 10, 23),
+(32, 10, 33),
+(33, 10, 41),
+(34, 10, 48),
+(35, 10, 51),
+(36, 17, 2),
+(37, 17, 4),
+(38, 17, 18),
+(39, 17, 29),
+(40, 17, 38),
+(41, 17, 45),
+(42, 17, 51),
+(43, 4, 2),
+(44, 4, 4),
+(45, 4, 26),
+(46, 4, 31),
+(47, 4, 41),
+(48, 4, 45),
+(49, 4, 51);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `karyawan`
+-- Struktur dari tabel `karyawan`
 --
 
 CREATE TABLE `karyawan` (
   `id` int(11) NOT NULL,
-  `nama_karyawan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `nik` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_karyawan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tanggal_lahir` date DEFAULT NULL,
+  `alamat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `karyawan`
+-- Dumping data untuk tabel `karyawan`
 --
 
-INSERT INTO `karyawan` (`id`, `nama_karyawan`) VALUES
-(1, 'Achmad Gilang Romadhon'),
-(2, 'Abdillah Fachrudin'),
-(3, 'Arief'),
-(4, 'Anggi Setya Putra'),
-(5, 'Dimas Arganatha Dwi Putro'),
-(6, 'Ezra Putra Perdana'),
-(7, 'Fajar Shodiq'),
-(8, 'Facrur Reza'),
-(9, 'Heri Santoso Ramadani'),
-(10, 'Hafidz Sofyan Miftah'),
-(11, 'Iwang Ahmad Nugraha'),
-(12, 'Moch. Rachman Firmansyah'),
-(13, 'Mansur'),
-(14, 'Mujiono'),
-(15, 'Moch. Jefrey Devito'),
-(16, 'Moch. Cholik'),
-(17, 'Mohamad Ubaidullah'),
-(18, 'Mochamad Musta\'in, SE'),
-(19, 'Moch Reza'),
-(20, 'Adri Yudha'),
-(21, 'Ilham Tri'),
-(22, 'Ikbar Rastujawi'),
-(23, 'Eka'),
-(24, 'Asyrof'),
-(25, 'Fadhli'),
-(26, 'Dimas Rendi Adi Susanto'),
-(27, 'Qodhi Fakhrul Islam'),
-(28, 'Roy Hartanto Lapian'),
-(29, 'Rahmad Hendrawan'),
-(30, 'Rubiantoro'),
-(31, 'Setiyo Hadi Raharjo'),
-(32, 'Yogi Prakoso'),
-(33, 'Mohammad Rizky Aditya '),
-(34, 'Angga Aji Prayoga'),
-(35, 'Alif Surya Perdana'),
-(36, 'Achmad Dika Satria'),
-(37, 'Alvin Hafidz'),
-(38, 'Roni Firmansyah'),
-(39, 'Heri Supriadi'),
-(40, 'Wiyatno'),
-(41, 'Rahmat hidayat'),
-(42, 'Muhammad Fajar A'),
-(43, 'Ach Helmi'),
-(44, 'Achmad Sukiman'),
-(45, 'Andi Rifai'),
-(46, 'Andre Maliki'),
-(47, 'Anugrah Rangga'),
-(48, 'Billy A A'),
-(49, 'Ardi Tri Krisdianto'),
-(50, 'Ardito Sumarta'),
-(51, 'Aswin'),
-(52, 'Candra Wahyu Agung'),
-(56, 'Catur Wibowo'),
-(57, 'Danang Sawong Sethowono'),
-(58, 'Deddy Dermawan'),
-(59, 'Didik Kuswanto'),
-(60, 'Dimas Bagus Prakoso'),
-(61, 'Dimas Mahendra'),
-(62, 'Dwiki Wahyu'),
-(63, 'Eko Mardianto'),
-(64, 'Erwin Santoso'),
-(65, 'Fakhrul Ivan Setiadji'),
-(66, 'Fatchur Affandi'),
-(67, 'Febri Yuri Perka'),
-(68, 'Ferdiansyah Putra Irawan'),
-(69, 'Gatot Denny Susanto'),
-(70, 'Ilham Furkoni Said'),
-(71, 'Ilham Saifur Rohman'),
-(72, 'Irfan Septirio'),
-(73, 'Irfan Afandi'),
-(74, 'Ivan Arfianshar'),
-(75, 'Kokoh Budi Putranto'),
-(76, 'Kurniawan CS'),
-(77, 'Lahuri'),
-(78, 'Laurensious'),
-(79, 'Mashuri'),
-(80, 'Maskur'),
-(81, 'Mastafa azzzam'),
-(82, 'Moch Taufik'),
-(83, 'Moch solikin'),
-(84, 'Muhadi'),
-(85, 'Muhammad Wahyudi'),
-(86, 'Muhammad Al Hidrah'),
-(87, 'Panji Putra W'),
-(88, 'Rahmad Setiawan'),
-(89, 'Redho Charisma'),
-(90, 'Rio Yuliantinus'),
-(91, 'Rizky Firman'),
-(92, 'Hidayat Santoso'),
-(93, 'Ronai Wiyonarko'),
-(94, 'Rovaldo Dilonsia Austin'),
-(95, 'Rudiarto'),
-(96, 'Rudy Setyawan'),
-(97, 'Sandi Irawan'),
-(98, 'Syaiful Anam'),
-(99, 'Syaiful Anam'),
-(100, 'Tomas Syahadat'),
-(101, 'Tony Novidia'),
-(102, 'Trio Sadewo'),
-(103, 'Yahya Nur Fazri'),
-(104, 'Yainudin'),
-(105, 'Yudha Pratama'),
-(106, 'Yulian Firman Hidayat'),
-(107, 'Achmad Syahid\r\n'),
-(108, 'Abdul Rahman\r\n'),
-(109, 'Agus Maulana Malik\r\n'),
-(110, 'Agus Sutikno\r\n'),
-(111, 'Ahmad Saiful \r\n'),
-(112, 'Ariyo Permadi\r\n'),
-(113, 'Arof Muchlis\r\n'),
-(114, 'Bambang Heru Prasetyo\r\n'),
-(115, 'Bayu Prasetya\r\n'),
-(116, 'Dandy Dwi Julianto\r\n'),
-(117, 'Dedo Novrian Sakti\r\n'),
-(120, 'Deky Wijaya P\r\n'),
-(121, 'Dhanis Agustian\r\n'),
-(122, 'Dimas Rifqi Firdaus F\r\n'),
-(123, 'Edo Kriswindarto\r\n'),
-(124, 'Efkelin\r\n'),
-(125, 'Fachrurozi\r\n'),
-(126, 'Faisal Qomar\r\n'),
-(127, 'Iksan Agung Purnomo Atma Yuhan\r\n'),
-(128, 'Erfan Maulana\r\n'),
-(129, 'Kari Muji Kuswanto\r\n'),
-(130, 'M.Ardiansyah\r\n'),
-(131, 'M.Arifin\r\n'),
-(132, 'Moch Agus Susanto\r\n'),
-(133, 'Moh Fajar Ramadhan\r\n'),
-(134, 'Muhammad Hasan\r\n'),
-(135, 'Muhammad Inugroho Junaidi\r\n'),
-(136, 'Rachmad Apriyono\r\n'),
-(137, 'Rafly Firmansyah\r\n'),
-(138, 'Rahmat Hadi Ma\'Ruf\r\n'),
-(139, 'Raza Abdul Aziz\r\n'),
-(140, 'Riky Saputro\r\n'),
-(141, 'Solikin\r\n'),
-(142, 'Suherman\r\n'),
-(143, 'Surya Iqbal Pradana\r\n'),
-(144, 'Wenda Erfika Putra\r\n'),
-(145, 'Teguh kiswantoro\r\n'),
-(146, 'Mariyanto\r\n'),
-(147, 'Frisma Andrianto\r\n'),
-(148, 'Rendy Wasis\r\n'),
-(149, 'Dimas Arjuna\r\n'),
-(150, 'Dimas Dwi Aditya\r\n');
+INSERT INTO `karyawan` (`id`, `nik`, `nama_karyawan`, `tanggal_lahir`, `alamat`) VALUES
+(1, NULL, 'Achmad Gilang Romadhon', NULL, NULL),
+(2, NULL, 'Abdillah Fachrudin', NULL, NULL),
+(3, NULL, 'Arief', NULL, NULL),
+(4, NULL, 'Anggi Setya Putra', NULL, NULL),
+(5, NULL, 'Dimas Arganatha Dwi Putro', NULL, NULL),
+(6, NULL, 'Ezra Putra Perdana', NULL, NULL),
+(7, NULL, 'Fajar Shodiq', NULL, NULL),
+(8, NULL, 'Facrur Reza', NULL, NULL),
+(9, NULL, 'Heri Santoso Ramadani', NULL, NULL),
+(10, NULL, 'Hafidz Sofyan Miftah', NULL, NULL),
+(11, NULL, 'Iwang Ahmad Nugraha', NULL, NULL),
+(12, NULL, 'Moch. Rachman Firmansyah', NULL, NULL),
+(13, NULL, 'Mansur', NULL, NULL),
+(14, NULL, 'Mujiono', NULL, NULL),
+(15, NULL, 'Moch. Jefrey Devito', NULL, NULL),
+(16, NULL, 'Moch. Cholik', NULL, NULL),
+(17, NULL, 'Mohamad Ubaidullah', NULL, NULL),
+(18, NULL, 'Mochamad Musta\'in, SE', NULL, NULL),
+(19, NULL, 'Moch Reza', NULL, NULL),
+(20, NULL, 'Adri Yudha', NULL, NULL),
+(21, NULL, 'Ilham Tri', NULL, NULL),
+(22, NULL, 'Ikbar Rastujawi', NULL, NULL),
+(23, NULL, 'Eka', NULL, NULL),
+(24, NULL, 'Asyrof', NULL, NULL),
+(25, NULL, 'Fadhli', NULL, NULL),
+(26, NULL, 'Dimas Rendi Adi Susanto', NULL, NULL),
+(27, NULL, 'Qodhi Fakhrul Islam', NULL, NULL),
+(28, NULL, 'Roy Hartanto Lapian', NULL, NULL),
+(29, NULL, 'Rahmad Hendrawan', NULL, NULL),
+(30, NULL, 'Rubiantoro', NULL, NULL),
+(31, NULL, 'Setiyo Hadi Raharjo', NULL, NULL),
+(32, NULL, 'Yogi Prakoso', NULL, NULL),
+(33, NULL, 'Mohammad Rizky Aditya ', NULL, NULL),
+(34, NULL, 'Angga Aji Prayoga', NULL, NULL),
+(35, NULL, 'Alif Surya Perdana', NULL, NULL),
+(36, NULL, 'Achmad Dika Satria', NULL, NULL),
+(37, NULL, 'Alvin Hafidz', NULL, NULL),
+(38, NULL, 'Roni Firmansyah', NULL, NULL),
+(39, NULL, 'Heri Supriadi', NULL, NULL),
+(40, NULL, 'Wiyatno', NULL, NULL),
+(41, NULL, 'Rahmat hidayat', NULL, NULL),
+(42, NULL, 'Muhammad Fajar A', NULL, NULL),
+(43, NULL, 'Ach Helmi', NULL, NULL),
+(44, NULL, 'Achmad Sukiman', NULL, NULL),
+(45, NULL, 'Andi Rifai', NULL, NULL),
+(46, NULL, 'Andre Maliki', NULL, NULL),
+(47, NULL, 'Anugrah Rangga', NULL, NULL),
+(48, NULL, 'Billy A A', NULL, NULL),
+(49, NULL, 'Ardi Tri Krisdianto', NULL, NULL),
+(50, NULL, 'Ardito Sumarta', NULL, NULL),
+(51, NULL, 'Aswin', NULL, NULL),
+(52, NULL, 'Candra Wahyu Agung', NULL, NULL),
+(56, NULL, 'Catur Wibowo', NULL, NULL),
+(57, NULL, 'Danang Sawong Sethowono', NULL, NULL),
+(58, NULL, 'Deddy Dermawan', NULL, NULL),
+(59, NULL, 'Didik Kuswanto', NULL, NULL),
+(60, NULL, 'Dimas Bagus Prakoso', NULL, NULL),
+(61, NULL, 'Dimas Mahendra', NULL, NULL),
+(62, NULL, 'Dwiki Wahyu', NULL, NULL),
+(63, NULL, 'Eko Mardianto', NULL, NULL),
+(64, NULL, 'Erwin Santoso', NULL, NULL),
+(65, NULL, 'Fakhrul Ivan Setiadji', NULL, NULL),
+(66, NULL, 'Fatchur Affandi', NULL, NULL),
+(67, NULL, 'Febri Yuri Perka', NULL, NULL),
+(68, NULL, 'Ferdiansyah Putra Irawan', NULL, NULL),
+(69, NULL, 'Gatot Denny Susanto', NULL, NULL),
+(70, NULL, 'Ilham Furkoni Said', NULL, NULL),
+(71, NULL, 'Ilham Saifur Rohman', NULL, NULL),
+(72, NULL, 'Irfan Septirio', NULL, NULL),
+(73, NULL, 'Irfan Afandi', NULL, NULL),
+(74, NULL, 'Ivan Arfianshar', NULL, NULL),
+(75, NULL, 'Kokoh Budi Putranto', NULL, NULL),
+(76, NULL, 'Kurniawan CS', NULL, NULL),
+(77, NULL, 'Lahuri', NULL, NULL),
+(78, NULL, 'Laurensious', NULL, NULL),
+(79, NULL, 'Mashuri', NULL, NULL),
+(80, NULL, 'Maskur', NULL, NULL),
+(81, NULL, 'Mastafa azzzam', NULL, NULL),
+(82, NULL, 'Moch Taufik', NULL, NULL),
+(83, NULL, 'Moch solikin', NULL, NULL),
+(84, NULL, 'Muhadi', NULL, NULL),
+(85, NULL, 'Muhammad Wahyudi', NULL, NULL),
+(86, NULL, 'Muhammad Al Hidrah', NULL, NULL),
+(87, NULL, 'Panji Putra W', NULL, NULL),
+(88, NULL, 'Rahmad Setiawan', NULL, NULL),
+(89, NULL, 'Redho Charisma', NULL, NULL),
+(90, NULL, 'Rio Yuliantinus', NULL, NULL),
+(91, NULL, 'Rizky Firman', NULL, NULL),
+(92, NULL, 'Hidayat Santoso', NULL, NULL),
+(93, NULL, 'Ronai Wiyonarko', NULL, NULL),
+(94, NULL, 'Rovaldo Dilonsia Austin', NULL, NULL),
+(95, NULL, 'Rudiarto', NULL, NULL),
+(96, NULL, 'Rudy Setyawan', NULL, NULL),
+(97, NULL, 'Sandi Irawan', NULL, NULL),
+(98, NULL, 'Syaiful Anam', NULL, NULL),
+(99, NULL, 'Syaiful Anam', NULL, NULL),
+(100, NULL, 'Tomas Syahadat', NULL, NULL),
+(101, NULL, 'Tony Novidia', NULL, NULL),
+(102, NULL, 'Trio Sadewo', NULL, NULL),
+(103, NULL, 'Yahya Nur Fazri', NULL, NULL),
+(104, NULL, 'Yainudin', NULL, NULL),
+(105, NULL, 'Yudha Pratama', NULL, NULL),
+(106, NULL, 'Yulian Firman Hidayat', NULL, NULL),
+(107, NULL, 'Achmad Syahid\r\n', NULL, NULL),
+(108, NULL, 'Abdul Rahman\r\n', NULL, NULL),
+(109, NULL, 'Agus Maulana Malik\r\n', NULL, NULL),
+(110, NULL, 'Agus Sutikno\r\n', NULL, NULL),
+(111, NULL, 'Ahmad Saiful \r\n', NULL, NULL),
+(112, NULL, 'Ariyo Permadi\r\n', NULL, NULL),
+(113, NULL, 'Arof Muchlis\r\n', NULL, NULL),
+(114, NULL, 'Bambang Heru Prasetyo\r\n', NULL, NULL),
+(115, NULL, 'Bayu Prasetya\r\n', NULL, NULL),
+(116, NULL, 'Dandy Dwi Julianto\r\n', NULL, NULL),
+(117, NULL, 'Dedo Novrian Sakti\r\n', NULL, NULL),
+(120, NULL, 'Deky Wijaya P\r\n', NULL, NULL),
+(121, NULL, 'Dhanis Agustian\r\n', NULL, NULL),
+(122, NULL, 'Dimas Rifqi Firdaus F\r\n', NULL, NULL),
+(123, NULL, 'Edo Kriswindarto\r\n', NULL, NULL),
+(124, NULL, 'Efkelin\r\n', NULL, NULL),
+(125, NULL, 'Fachrurozi\r\n', NULL, NULL),
+(126, NULL, 'Faisal Qomar\r\n', NULL, NULL),
+(127, NULL, 'Iksan Agung Purnomo Atma Yuhan\r\n', NULL, NULL),
+(128, NULL, 'Erfan Maulana\r\n', NULL, NULL),
+(129, NULL, 'Kari Muji Kuswanto\r\n', NULL, NULL),
+(130, NULL, 'M.Ardiansyah\r\n', NULL, NULL),
+(131, NULL, 'M.Arifin\r\n', NULL, NULL),
+(132, NULL, 'Moch Agus Susanto\r\n', NULL, NULL),
+(133, NULL, 'Moh Fajar Ramadhan\r\n', NULL, NULL),
+(134, NULL, 'Muhammad Hasan\r\n', NULL, NULL),
+(135, NULL, 'Muhammad Inugroho Junaidi\r\n', NULL, NULL),
+(136, NULL, 'Rachmad Apriyono\r\n', NULL, NULL),
+(137, NULL, 'Rafly Firmansyah\r\n', NULL, NULL),
+(138, NULL, 'Rahmat Hadi Ma\'Ruf\r\n', NULL, NULL),
+(139, NULL, 'Raza Abdul Aziz\r\n', NULL, NULL),
+(140, NULL, 'Riky Saputro\r\n', NULL, NULL),
+(141, NULL, 'Solikin\r\n', NULL, NULL),
+(142, NULL, 'Suherman\r\n', NULL, NULL),
+(143, NULL, 'Surya Iqbal Pradana\r\n', NULL, NULL),
+(144, NULL, 'Wenda Erfika Putra\r\n', NULL, NULL),
+(145, NULL, 'Teguh kiswantoro\r\n', NULL, NULL),
+(146, NULL, 'Mariyanto\r\n', NULL, NULL),
+(147, NULL, 'Frisma Andrianto\r\n', NULL, NULL),
+(148, NULL, 'Rendy Wasis\r\n', NULL, NULL),
+(149, NULL, 'Dimas Arjuna\r\n', NULL, NULL),
+(150, NULL, 'Dimas Dwi Aditya\r\n', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kriteria`
+-- Struktur dari tabel `kriteria`
 --
 
 CREATE TABLE `kriteria` (
@@ -237,7 +245,7 @@ CREATE TABLE `kriteria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `kriteria`
+-- Dumping data untuk tabel `kriteria`
 --
 
 INSERT INTO `kriteria` (`id`, `nama_kriteria`, `status_kriteria`) VALUES
@@ -252,7 +260,7 @@ INSERT INTO `kriteria` (`id`, `nama_kriteria`, `status_kriteria`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nilai_bobot`
+-- Struktur dari tabel `nilai_bobot`
 --
 
 CREATE TABLE `nilai_bobot` (
@@ -262,7 +270,7 @@ CREATE TABLE `nilai_bobot` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `nilai_bobot`
+-- Dumping data untuk tabel `nilai_bobot`
 --
 
 INSERT INTO `nilai_bobot` (`id`, `id_kriteria`, `nilai_bobot_kriteria`) VALUES
@@ -277,7 +285,78 @@ INSERT INTO `nilai_bobot` (`id`, `id_kriteria`, `nilai_bobot_kriteria`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role`
+-- Struktur dari tabel `nilai_kriteria`
+--
+
+CREATE TABLE `nilai_kriteria` (
+  `id` int(11) NOT NULL,
+  `id_kriteria` int(11) DEFAULT NULL,
+  `nilai_parameter` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nilai_bobot` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data untuk tabel `nilai_kriteria`
+--
+
+INSERT INTO `nilai_kriteria` (`id`, `id_kriteria`, `nilai_parameter`, `nilai_bobot`) VALUES
+(1, 1, 'Memahami Sistem OMS Pada Software Atau Aplikasi Kurir', 1),
+(2, 1, 'Kemampuan Mapping Yang Baik Dan Menguasai Wilayah Pengiriman', 2),
+(3, 1, 'Memahami OMS Aplikasi Kurir, Kemampuan Mapping Yang Baik, Dan Memahami Wilayah Pengiriman', 3),
+(4, 2, '500', 1),
+(5, 2, '600', 1),
+(6, 2, '700', 1),
+(7, 2, '800', 1),
+(8, 2, '900', 1),
+(9, 2, '1000', 1),
+(10, 2, '1100', 1),
+(11, 2, '1200', 1),
+(12, 2, '1300', 2),
+(13, 2, '1400', 2),
+(14, 2, '1500', 3),
+(15, 2, '1600', 3),
+(16, 3, '60', 1),
+(17, 3, '55', 1),
+(18, 3, '50', 2),
+(19, 3, '45', 2),
+(20, 3, '40', 2),
+(21, 3, '35', 2),
+(22, 3, '30', 2),
+(23, 3, '25', 2),
+(24, 3, '20', 2),
+(25, 3, '15', 2),
+(26, 3, '10', 2),
+(27, 3, '5', 3),
+(28, 3, '0', 3),
+(29, 4, '100', 1),
+(30, 4, '200', 2),
+(31, 4, '300', 2),
+(32, 4, '400', 2),
+(33, 4, '500', 2),
+(34, 4, '600', 2),
+(35, 4, '700', 2),
+(36, 4, '800', 3),
+(37, 5, '6', 1),
+(38, 5, '5', 1),
+(39, 5, '4', 1),
+(40, 5, '3', 2),
+(41, 5, '2', 2),
+(42, 5, '1', 2),
+(43, 5, '0', 3),
+(44, 6, '4', 1),
+(45, 6, '5', 2),
+(46, 6, '6', 2),
+(47, 6, '7', 2),
+(48, 6, '8', 2),
+(49, 6, '10', 3),
+(50, 7, 'Membawa Paket Dan Tidak Didelivery Secara Sengaja Lebih Dari 10', 1),
+(51, 7, 'Melakukan Tindakan Mengurangi Jumlah Uang COD (cash On Delivery) Yang Akan Dibayarkan', 2),
+(52, 7, 'Paket Telah Di Delivery Dan Membayar Uang COD (cash On Delivery) Tepat Waktu', 3);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `role`
 --
 
 CREATE TABLE `role` (
@@ -286,7 +365,7 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `role`
+-- Dumping data untuk tabel `role`
 --
 
 INSERT INTO `role` (`id`, `role_name`) VALUES
@@ -296,7 +375,18 @@ INSERT INTO `role` (`id`, `role_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `temp_list`
+--
+
+CREATE TABLE `temp_list` (
+  `id` int(11) NOT NULL,
+  `id_karyawan` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `user`
 --
 
 CREATE TABLE `user` (
@@ -308,7 +398,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
 INSERT INTO `user` (`id`, `username`, `nama_user`, `password`, `role`) VALUES
@@ -320,104 +410,142 @@ INSERT INTO `user` (`id`, `username`, `nama_user`, `password`, `role`) VALUES
 --
 
 --
--- Indexes for table `data_alternatif`
+-- Indeks untuk tabel `data_alternatif`
 --
 ALTER TABLE `data_alternatif`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_karyawan` (`id_karyawan`),
-  ADD KEY `id_kriteria` (`id_kriteria`);
+  ADD KEY `id_kurir` (`id_kurir`),
+  ADD KEY `id_penilaian` (`id_penilaian`);
 
 --
--- Indexes for table `karyawan`
+-- Indeks untuk tabel `karyawan`
 --
 ALTER TABLE `karyawan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `kriteria`
+-- Indeks untuk tabel `kriteria`
 --
 ALTER TABLE `kriteria`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `nilai_bobot`
+-- Indeks untuk tabel `nilai_bobot`
 --
 ALTER TABLE `nilai_bobot`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_kriteria` (`id_kriteria`);
 
 --
--- Indexes for table `role`
+-- Indeks untuk tabel `nilai_kriteria`
+--
+ALTER TABLE `nilai_kriteria`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_kriteria` (`id_kriteria`);
+
+--
+-- Indeks untuk tabel `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user`
+-- Indeks untuk tabel `temp_list`
+--
+ALTER TABLE `temp_list`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_karyawan` (`id_karyawan`);
+
+--
+-- Indeks untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD KEY `role` (`role`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `data_alternatif`
+-- AUTO_INCREMENT untuk tabel `data_alternatif`
 --
 ALTER TABLE `data_alternatif`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
--- AUTO_INCREMENT for table `karyawan`
+-- AUTO_INCREMENT untuk tabel `karyawan`
 --
 ALTER TABLE `karyawan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
 
 --
--- AUTO_INCREMENT for table `kriteria`
+-- AUTO_INCREMENT untuk tabel `kriteria`
 --
 ALTER TABLE `kriteria`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `nilai_bobot`
+-- AUTO_INCREMENT untuk tabel `nilai_bobot`
 --
 ALTER TABLE `nilai_bobot`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `role`
+-- AUTO_INCREMENT untuk tabel `nilai_kriteria`
+--
+ALTER TABLE `nilai_kriteria`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- AUTO_INCREMENT untuk tabel `role`
 --
 ALTER TABLE `role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT untuk tabel `temp_list`
+--
+ALTER TABLE `temp_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+
+--
+-- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `data_alternatif`
+-- Ketidakleluasaan untuk tabel `data_alternatif`
 --
 ALTER TABLE `data_alternatif`
-  ADD CONSTRAINT `data_alternatif_ibfk_1` FOREIGN KEY (`id_karyawan`) REFERENCES `karyawan` (`id`),
-  ADD CONSTRAINT `data_alternatif_ibfk_2` FOREIGN KEY (`id_kriteria`) REFERENCES `kriteria` (`id`);
+  ADD CONSTRAINT `data_alternatif_ibfk_1` FOREIGN KEY (`id_kurir`) REFERENCES `karyawan` (`id`),
+  ADD CONSTRAINT `data_alternatif_ibfk_2` FOREIGN KEY (`id_penilaian`) REFERENCES `nilai_kriteria` (`id`);
 
 --
--- Constraints for table `nilai_bobot`
+-- Ketidakleluasaan untuk tabel `nilai_bobot`
 --
 ALTER TABLE `nilai_bobot`
   ADD CONSTRAINT `nilai_bobot_ibfk_1` FOREIGN KEY (`id_kriteria`) REFERENCES `kriteria` (`id`);
 
 --
--- Constraints for table `user`
+-- Ketidakleluasaan untuk tabel `nilai_kriteria`
+--
+ALTER TABLE `nilai_kriteria`
+  ADD CONSTRAINT `nilai_kriteria_ibfk_1` FOREIGN KEY (`id_kriteria`) REFERENCES `kriteria` (`id`);
+
+--
+-- Ketidakleluasaan untuk tabel `temp_list`
+--
+ALTER TABLE `temp_list`
+  ADD CONSTRAINT `temp_list_ibfk_1` FOREIGN KEY (`id_karyawan`) REFERENCES `karyawan` (`id`);
+
+--
+-- Ketidakleluasaan untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role`) REFERENCES `role` (`id`);

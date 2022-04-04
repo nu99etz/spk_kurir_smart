@@ -23,5 +23,4 @@ require_once($config['helpers'].'Page.php');
 require_once($config['helpers'].'Route.php');
 require_once($config['helpers'].'Maintence.php');
 
-
 $conn = new Query($config);

@@ -4,22 +4,6 @@ if (Route::is_ajax()) {
 
     // Maintence::debug($_POST['nilai']);
 
-    // fungsi untuk megambil nilai yang ada di kurung oke
-    function ambilNilaiAlternatif($deskripsi)
-    {
-        $explodeKata = explode("(", $deskripsi);
-        $nilaiAlternatif = 0;
-        foreach($explodeKata as $value) {
-            $filter_angka = preg_replace("/[^a-zA-Z0-9]/", "", $value);
-            if(is_numeric($filter_angka)) {
-                $nilaiAlternatif = $value;
-            }
-        }
-        $hilangKata = explode(")", $nilaiAlternatif);
-        $nilaiAlternatif = $hilangKata[0];
-        return (int) $nilaiAlternatif;
-    }
-
     // validasi data
     $msg = array();
     foreach ($_POST as $key => $value) {
@@ -51,9 +35,8 @@ if (Route::is_ajax()) {
 
             for ($i = 0; $i < count($kriteriaRow); $i++) {
                 $kriteria = $kriteriaRow[$i];
-                $deskripsi = ucwords($_POST['deskripsi'][$kriteria]);
-                $nilai_alternatif = ambilNilaiAlternatif($_POST['deskripsi'][$kriteria]);
-                $sql = "insert into data_alternatif (id_karyawan, id_kriteria, deskripsi , nilai_alternatif) values ('$nama_karyawan', '$kriteria', '$deskripsi', '$nilai_alternatif')";
+                $nilai = $_POST['deskripsi'][$kriteria];
+                $sql = "insert into data_alternatif (id_kurir, id_penilaian) values ('$nama_karyawan', '$nilai')";
                 $query = mysqli_query($conn->connect(), $sql);
             }
 
@@ -77,16 +60,15 @@ if (Route::is_ajax()) {
                 // Hapus Data Alternatif dulu
                 $id = $_POST['id'];
 
-                $sqlHapusAlternatif = "delete from data_alternatif where id_karyawan = $id";
+                $sqlHapusAlternatif = "delete from data_alternatif where id_kurir = $id";
                 $queryHapusAlternatif = mysqli_query($conn->connect(), $sqlHapusAlternatif);
 
                 $nama_karyawan = $_POST['nama_karyawan'];
 
                 for ($i = 0; $i < count($kriteriaRow); $i++) {
                     $kriteria = $kriteriaRow[$i];
-                    $deskripsi = ucwords($_POST['deskripsi'][$kriteria]);
-                    $nilai_alternatif = ambilNilaiAlternatif($_POST['deskripsi'][$kriteria]);
-                    $sql = "insert into data_alternatif (id_karyawan, id_kriteria, deskripsi , nilai_alternatif) values ('$nama_karyawan', '$kriteria', '$deskripsi', '$nilai_alternatif')";
+                    $nilai = $_POST['deskripsi'][$kriteria];
+                    $sql = "insert into data_alternatif (id_kurir, id_penilaian) values ('$nama_karyawan', '$nilai')";
                     $query = mysqli_query($conn->connect(), $sql);
                 }
 

@@ -15,7 +15,7 @@ if (Route::is_ajax()) {
         }
     }
 
-    $sql = "select id, nama_karyawan from karyawan where id in (select id_karyawan from data_alternatif)";
+    $sql = "select id, nama_karyawan from karyawan where id in (select id_kurir from data_alternatif)";
 
     $query = mysqli_query($conn->connect(), $sql);
 

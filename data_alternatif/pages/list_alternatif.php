@@ -11,7 +11,7 @@ if (Route::is_ajax()) {
         }
     }
 
-    $sql = "select a.*, b.nama_kriteria, c.nama_karyawan from data_alternatif a left join kriteria b on a.id_kriteria = b.id join karyawan c on a.id_karyawan = c.id";
+    $sql = "select a.*, b.nama_karyawan, c.nama_kriteria, d.id_kriteria, d.nilai_parameter, d.nilai_bobot from data_alternatif a left join karyawan b on a.id_kurir = b.id left join nilai_kriteria d on a.id_penilaian = d.id left join kriteria c on d.id_kriteria = c.id";
 
     $query = mysqli_query($conn->connect(), $sql);
 
@@ -29,7 +29,7 @@ if (Route::is_ajax()) {
 
     while ($alternatif = mysqli_fetch_array($query)) {
         $row = [];
-        $map[$alternatif['id_karyawan']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['deskripsi'];
+        $map[$alternatif['id_kurir']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['nilai_parameter'];
     }
 
     foreach ($map as $key => $value) {
@@ -42,9 +42,9 @@ if (Route::is_ajax()) {
             $row[] = getDeskripsi($value2, $value);
         }
         // if (Auth::getSession('role') == 1) {
-            $button = '<button type="button" name="hapus" id="' . $key . '" class="hapus btn-flat btn-danger btn-sm"><i class = "fa fa-trash"></i></button> ';
-            $button .= '<button type="button" name="ubah" id="' . $key . '" class="ubah btn-flat btn-warning btn-sm"><i class = "fa fa-edit"></i></button> ';
-            $row[] = $button;
+        $button = '<button type="button" name="hapus" id="' . $key . '" class="hapus btn-flat btn-danger btn-sm"><i class = "fa fa-trash"></i></button> ';
+        $button .= '<button type="button" name="ubah" id="' . $key . '" class="ubah btn-flat btn-warning btn-sm"><i class = "fa fa-edit"></i></button> ';
+        $row[] = $button;
         // }
         $no++;
         $record[] = $row;

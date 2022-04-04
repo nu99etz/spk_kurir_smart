@@ -36,3 +36,6 @@ $config['import_mode'] = false;
 
 // nama pemilik aplikasi
 $config['nama_mhs_npm'] = "Rama - NPM";
+
+// memory debug
+$config['debug-memory'] = true;
