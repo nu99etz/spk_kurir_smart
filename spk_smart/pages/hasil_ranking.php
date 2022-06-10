@@ -52,7 +52,25 @@ if ($sumNilaiBobot != 100) {
             $normalisasiBobot[$key] = $value / $sumNilaiBobot;
         }
 
-        // Maintence::debug($normalisasiBobot);
+        function getNamaKriteria($conn, $id)
+        {
+            $sql = "select nama_kriteria from kriteria where id = $id";
+            $query = mysqli_query($conn->connect(), $sql);
+            $data = mysqli_fetch_assoc($query);
+            return $data['nama_kriteria'];
+        }
+
+        $normalisasiView = "";
+        $no = 1;
+        foreach ($normalisasiBobot as $key => $value) {
+            $normalisasiView .= "<tr>";
+            $normalisasiView .= "<td>" . $no . "</td>";
+            $normalisasiView .= "<td>" . getNamaKriteria($conn, $key) . "</td>";
+            $normalisasiView .= "<td>" . $nilaiBobotRow[$key] . "</td>";
+            $normalisasiView .= "<td>" . $value . "</td>";
+            $normalisasiView .= "</tr>";
+            $no++;
+        }
 
         function getNilai($data, $idKriteria)
         {
@@ -288,6 +306,25 @@ if ($sumNilaiBobot != 100) {
                                 <?php   } ?>
                             </thead>
                             <tbody><?php echo $htmlMinMax; ?></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title m-0">Nilai Normalisasi Bobot</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="nilaiminmax" class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <thead>
+                                <th>No</th>
+                                <th>Nama Kriteria</th>
+                                <th>Nilai Bobot</th>
+                                <th>Nilai Normalisasi</th>
+                            </thead>
+                            <tbody><?php echo $normalisasiView; ?></tbody>
                         </table>
                     </div>
                 </div>

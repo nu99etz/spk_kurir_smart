@@ -3,8 +3,8 @@
 $config = array();
 
 // Config URL
-$config['base_url'] = "http://localhost";
-$config['root'] = '/home/nu99etz/public_html';
+$config['base_url'] = "http://localhost:8080";
+$config['root'] = '/var/www/html';
 $config['path'] = '/spk_kurir_smart_v2';
 $config['assets'] = $config['path'] . '/assets/';
 $config['helpers'] = '../helpers/';
@@ -15,8 +15,8 @@ $config['include'] = $config['path'] . '/include/';
 $config['vendor'] = '../vendor/';
 
 // Config DB
-$config['db_host'] = "localhost";
-$config['db_name'] = "spk_karywan_smart";
+$config['db_host'] = "mariadb-server";
+$config['db_name'] = "spk_karywan_smart_v2";
 $config['db_username'] = "root";
 $config['db_password'] = "sapi";
 
@@ -38,4 +38,4 @@ $config['import_mode'] = false;
 $config['nama_mhs_npm'] = "Rama - NPM";
 
 // memory debug
-$config['debug-memory'] = true;
+$config['debug-memory'] = false;

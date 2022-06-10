@@ -4,10 +4,14 @@ if (Route::is_ajax()) {
 
     // validasi data
     $msg = array();
-    foreach ($_POST as $key => $value) {
-        if ($_POST[$key] == "") {
-            $msg[$key] = $key . " Tidak Boleh Kosong";
-        }
+    // foreach ($_POST as $key => $value) {
+    //     if ($_POST[$key] == "") {
+    //         $msg[$key] = $key . " Tidak Boleh Kosong";
+    //     }
+    // }
+
+    if ($_POST['nama_kriteria'] == "") {
+        $msg['nama_kriteria'] = "nama_kriteria Tidak boleh kosong";
     }
 
     if ($msg) {
@@ -22,8 +26,15 @@ if (Route::is_ajax()) {
 
             $nama_kriteria = $_POST['nama_kriteria'];
             $status_kriteria = $_POST['status_kriteria'];
+            $satuan = $_POST['satuan'];
+            $posisi_satuan = $_POST['posisi_satuan'];
+            if ($satuan == "") {
+                $is_angka = 1;
+            } else {
+                $is_angka = 0;
+            }
 
-            $sql = "insert into kriteria (nama_kriteria, status_kriteria) values ('$nama_kriteria', '$status_kriteria')";
+            $sql = "insert into kriteria (nama_kriteria, satuan, is_angka, posisi_satuan, status_kriteria) values ('$nama_kriteria', '$satuan', '$is_angka', '$posisi_satuan', '$status_kriteria')";
 
             $query = mysqli_query($conn->connect(), $sql);
 
@@ -39,15 +50,22 @@ if (Route::is_ajax()) {
                 ];
             }
         } else {
-            
+
             // proses update data
             if ($_POST['_method'] == "PUT") {
 
                 $nama_kriteria = $_POST['nama_kriteria'];
                 $status_kriteria = $_POST['status_kriteria'];
+                $satuan = $_POST['satuan'];
+                $posisi_satuan = $_POST['posisi_satuan'];
+                if ($satuan == "") {
+                    $is_angka = 1;
+                } else {
+                    $is_angka = 0;
+                }
                 $id = $_POST['id'];
 
-                $sql = "update kriteria set nama_kriteria = '$nama_kriteria', status_kriteria = '$status_kriteria' where id = $id and 1=1";
+                $sql = "update kriteria set nama_kriteria = '$nama_kriteria', satuan = '$satuan', is_angka = '$is_angka', posisi_satuan = '$posisi_satuan', status_kriteria = '$status_kriteria' where id = $id and 1=1";
 
                 $query = mysqli_query($conn->connect(), $sql);
 

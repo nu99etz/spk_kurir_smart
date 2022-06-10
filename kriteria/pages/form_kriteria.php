@@ -11,9 +11,16 @@ if (Route::is_ajax()) {
 
         $nama_kriteria = $kriteria['nama_kriteria'];
         $status_kriteria = $kriteria['status_kriteria'];
+        $satuan = $kriteria['satuan'];
+        $is_angka = $kriteria['is_angka'];
+        $posisi_satuan = $kriteria['posisi_satuan'];
+
     } else {
         $nama_kriteria = "";
         $status_kriteria = "";
+        $satuan = "";
+        $is_angka = "";
+        $posisi_satuan = "";
     }
 
 ?>
@@ -29,6 +36,30 @@ if (Route::is_ajax()) {
         <div class="form-group">
             <label for="nama_kriteria">Nama Kriteria</label>
             <input type="text" class="form-control rounded-0" name="nama_kriteria" id="nama_kriteria" placeholder="Nama Kriteria" value="<?php echo $nama_kriteria; ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="satuan">Satuan</label>
+            <input type="text" class="form-control rounded-0" name="satuan" id="satuan" placeholder="Nama Kriteria" value="<?php echo $satuan; ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="posisi_satuan">Posisi Satuan</label>
+            <select class="custom-select rounded-0" id="posisi_satuan" name="posisi_satuan">
+                <?php if ($posisi_satuan == 0) {
+                ?>
+                    <option value="0" selected>DEPAN</option>
+                    <option value="1">BELAKANG</option>
+                <?php  } else if ($posisi_satuan == 1) {
+                ?>
+                    <option value="0">DEPAN</option>
+                    <option value="1" selected>BELAKANG</option>
+                <?php   } else {
+                ?>
+                    <option value="0">DEPAN</option>
+                    <option value="1">BELAKANG</option>
+                <?php     } ?>
+            </select>
         </div>
 
         <div class="form-group">

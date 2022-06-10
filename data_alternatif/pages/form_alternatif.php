@@ -25,15 +25,23 @@ function getPenilaian($conn, $id_kriteria, $id = null)
 
 if ($p_act == "edit" && !empty($id)) {
 
-    $sql_data_alternatif = "select*from data_alternatif where id_kurir = $id";
+    $sql_data_alternatif = "select a.*, b.*, c.* from data_alternatif a join nilai_kriteria b on a.id_penilaian = b.id join kriteria c on b.id_kriteria = c.id where id_kurir = $id";
     $query_data_alternatif = mysqli_query($conn->connect(), $sql_data_alternatif);
 
     $recordKriteriakaryawan = [];
     while ($kriteriakaryawan = mysqli_fetch_assoc($query_data_alternatif)) {
         $row = [];
         $row['id_penilaian'] = $kriteriakaryawan['id_penilaian'];
+        if($kriteriakaryawan['is_angka'] == 1) {
+            $row['nilai'] = $kriteriakaryawan['nilai_parameter'];
+        } else if($kriteriakaryawan['is_angka'] == 0){
+            $nilai = explode(" ", $kriteriakaryawan['nilai']);
+            $row['nilai'] = $nilai[0];
+        }
         $recordKriteriakaryawan[] = $row;
     }
+
+    // Maintence::debug($recordKriteriakaryawan);
 
     $sql_karyawan = "select id, nama_karyawan from karyawan where id in (select id_kurir from data_alternatif where id_kurir = $id)";
 
@@ -49,7 +57,7 @@ if ($p_act == "edit" && !empty($id)) {
 
 $query_karyawan = mysqli_query($conn->connect(), $sql_karyawan);
 
-$sql_kriteria = "select id, nama_kriteria from kriteria where 1 = 1";
+$sql_kriteria = "select id, nama_kriteria, is_angka from kriteria where 1 = 1";
 $query_kriteria = mysqli_query($conn->connect(), $sql_kriteria);
 
 $record = [];
@@ -57,6 +65,7 @@ while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
     $row = [];
     $row['id'] = $kriteria['id'];
     $row['nama_kriteria'] = $kriteria['nama_kriteria'];
+    $row['is_angka'] = $kriteria['is_angka'];
     $record[] = $row;
 }
 
@@ -124,37 +133,64 @@ while ($kriteria = mysqli_fetch_assoc($query_kriteria)) {
 
                             <?php if (empty($recordKriteriakaryawan)) {
                                 for ($i = 0; $i < count($record); $i++) {
-                                    $nilai_kriteria = getPenilaian($conn, $record[$i]['id']);
+
                             ?>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
-                                                <select class="custom-select rounded-0" style="width: 100%;" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
-                                                    <option value="" disabled selected hidden>-- PILIH PENILAIAN --</option>
-                                                    <?php echo $nilai_kriteria; ?>
-                                                </select>
+                                    <?php if ($record[$i]['is_angka'] == 1) {
+                                        $nilai_kriteria = getPenilaian($conn, $record[$i]['id']);
+                                    ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
+                                                    <select class="custom-select rounded-0" style="width: 100%;" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
+                                                        <option value="" disabled selected hidden>-- PILIH PENILAIAN --</option>
+                                                        <?php echo $nilai_kriteria; ?>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php   }
+                                    <?php   } else if ($record[$i]['is_angka'] == 0) {
+                                    ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
+                                                    <input type="number" class="form-control rounded-0" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php    }
+                                }
                             } else if (!empty($recordKriteriakaryawan)) {
                                 for ($i = 0; $i < count($record); $i++) {
-                                    $nilai_kriteria = getPenilaian($conn, $record[$i]['id'], $recordKriteriakaryawan[$i]['id_penilaian']);
-                                ?>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
-                                                <select class="custom-select rounded-0" style="width: 100%;" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
-                                                    <option value="" disabled selected hidden>-- PILIH PENILAIAN --</option>
-                                                    <?php echo $nilai_kriteria; ?>
-                                                </select>
+
+                                    ?>
+                                    <?php if ($record[$i]['is_angka'] == 1) {
+                                        $nilai_kriteria = getPenilaian($conn, $record[$i]['id'], $recordKriteriakaryawan[$i]['id_penilaian']);
+                                    ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
+                                                    <select class="custom-select rounded-0" style="width: 100%;" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>">
+                                                        <option value="" disabled selected hidden>-- PILIH PENILAIAN --</option>
+                                                        <?php echo $nilai_kriteria; ?>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                            <?php   }
+                                    <?php   } else if ($record[$i]['is_angka'] == 0) {
+                                    ?>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="<?php echo $record[$i]['nama_kriteria']; ?>">Penilaian <?php echo $record[$i]['nama_kriteria']; ?></label>
+                                                    <input type="number" class="form-control rounded-0" id="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" name="deskripsi[<?php echo $record[$i]['id']; ?>]; ?>" value="<?php echo $recordKriteriakaryawan[$i]['nilai']; ?>">
+                                                </div>
+                                            </div>
+                                        </div>
+                            <?php    }
+                                }
                             } ?>
 
                             <div class="form-group">

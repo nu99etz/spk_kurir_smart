@@ -11,7 +11,7 @@ if (Route::is_ajax()) {
         }
     }
 
-    $sql = "select a.*, b.nama_karyawan, c.nama_kriteria, d.id_kriteria, d.nilai_parameter, d.nilai_bobot from data_alternatif a left join karyawan b on a.id_kurir = b.id left join nilai_kriteria d on a.id_penilaian = d.id left join kriteria c on d.id_kriteria = c.id";
+    $sql = "select a.*, b.nama_karyawan, c.*, d.id_kriteria, d.nilai_parameter, d.nilai_bobot from data_alternatif a left join karyawan b on a.id_kurir = b.id left join nilai_kriteria d on a.id_penilaian = d.id left join kriteria c on d.id_kriteria = c.id";
 
     $query = mysqli_query($conn->connect(), $sql);
 
@@ -29,7 +29,7 @@ if (Route::is_ajax()) {
 
     while ($alternatif = mysqli_fetch_array($query)) {
         $row = [];
-        $map[$alternatif['id_kurir']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['nilai_parameter'];
+        $map[$alternatif['id_kurir']][$alternatif['nama_karyawan']][$alternatif['id_kriteria']] = $alternatif['nilai'];
     }
 
     foreach ($map as $key => $value) {

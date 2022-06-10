@@ -2,7 +2,7 @@
 
 if (Route::is_ajax()) {
 
-    $sql = "select a.*, b.nama_kriteria from nilai_kriteria a join kriteria b on a.id_kriteria = b.id where 1=1";
+    $sql = "select a.*, b.nama_kriteria from nilai_kriteria a join kriteria b on a.id_kriteria = b.id where 1=1 order by a.id_kriteria asc";
 
     $query = mysqli_query($conn->connect(), $sql);
 
